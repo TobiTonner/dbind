@@ -73,7 +73,8 @@ define([], function(){
 			for(var i in this.value){
 				if(i.charAt(0) != '_'){
 					callback(i, this.get(i));
-				}			}
+				}
+			}
 		},
 		to: function(source, property){
 			source = convertToBindable(source);
@@ -119,11 +120,14 @@ define([], function(){
 		source.receive(function(value){
 			stateful.set('value', value);
 		});
-		stateful.watch('value', function(property, oldValue, value){
+		var watchHandle = stateful.watch('value', function(property, oldValue, value){
 			if(oldValue !== value){
 				source.put(value);
 			}
 		});
+        stateful.unwatch = function() {
+            watchHandle.unwatch();
+        };
 		return this;
 	};
 	StatefulBinding.prototype.get = function(key, callback){
